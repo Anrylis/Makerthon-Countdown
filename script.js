@@ -1,3 +1,5 @@
+const { is } = require("express/lib/request");
+
 // 全域變數
 let started = false;
 let isSwitching = false;
@@ -58,13 +60,15 @@ function extractYouTubeID(url) {
 }
 
 function playCurrent() {
+  if (!queue[currentIndex] || !queue[currentIndex].url) return;
   if (currentIndex >= queue.length) return;
   const { url, type } = queue[currentIndex];    
   const player = document.getElementById("player");
   player.innerHTML = "";
+  isSwitching = true;
 
   if (type == "youtube") {
-    const videoId = extractYouTubeID(queue[currentIndex].url);
+    const videoId = extractYouTubeID(url);
     if (!ytPlayer) {
     ytPlayer = new YT.Player("player", {
       width: 320,
@@ -72,7 +76,10 @@ function playCurrent() {
       videoId,
       playerVars: { autoplay: 1 },
       events: {
-        onReady: e => e.target.playVideo(),
+        onReady: e => {
+          e.target.playVideo();
+          isSwitching = false;
+        },
         onStateChange: onPlayerStateChange
       }
     });
