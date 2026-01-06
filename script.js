@@ -123,7 +123,7 @@ function fetchSheet() {
       // 建一個新 queue
       const newQueue = rows
         .map(row => {
-          const [timestamp, url] = row.split(",");
+          let [timestamp, url] = row.split(",");
           if (!url) return null;
           url = url.trim();
           if(url.includes("music.youtube.com")){
