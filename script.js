@@ -24,8 +24,7 @@ document.getElementById("startBtn").addEventListener("click", () => {
 
 // ===== Start 按鈕事件2 =====
 document.getElementById("musicBtn").addEventListener("click", () => {
-  if (started) return;
-  started = true;
+  if (!started) return;
 
   startPolling();   // 開始抓表單
 
