@@ -29,7 +29,7 @@ document.getElementById("musicBtn").addEventListener("click", () => {
 
   startPolling();   // 開始抓表單
 
-  document.getElementById("musicBtn").style.display = "none";
+  //document.getElementById("musicBtn").style.display = "none";
 });
  
 // ===== 倒數函式 =====
