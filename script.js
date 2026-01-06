@@ -1,6 +1,3 @@
-const { is } = require("express/lib/request");
-
-// 全域變數
 let started = false;
 let isSwitching = false;
 let remainingSeconds = 28 * 60 * 60;
