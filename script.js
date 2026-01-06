@@ -1,5 +1,6 @@
 // ===== 全域變數 =====
 let started = false;
+let isSwitching = false;
 let remainingSeconds = 27 * 60 * 60; // 27 小時倒數
 let queue = [];
 let currentIndex = 0;
@@ -60,10 +61,13 @@ function extractYouTubeID(url) {
 // ===== 播放目前歌曲 =====
 function playCurrent() {
   if (currentIndex >= queue.length) return;
+  const { url, type } = queue[currentIndex];    
+  const player = document.getElementById("player");
+  player.innerHTML = "";
 
-  const videoId = extractYouTubeID(queue[currentIndex].url);
-
-  if (!ytPlayer) {
+  if (type == "youtube") {
+    const videoId = extractYouTubeID(queue[currentIndex].url);
+    if (!ytPlayer) {
     ytPlayer = new YT.Player("player", {
       width: 320,
       height: 180,
@@ -74,9 +78,17 @@ function playCurrent() {
         onStateChange: onPlayerStateChange
       }
     });
-  } else {
-    ytPlayer.loadVideoById(videoId);
+    } else {
+      ytPlayer.loadVideoById(videoId);
+    }
+  } else if (type == "ytmusic") {
+      player.innerHTML = `<iframe src="${url}" width="320" height="180" allow="autoplay; encrypted-media" frameborder="0" allowfullscreen></iframe>`;  
+      document.getElementById("musicBtn").textContent = "Click!";
+  } else if (type === "spotify") {
+      player.innerHTML = `<iframe src="${url.replace("open.spotify.com","open.spotify.com/embed")}" width="300" height="80" allow="autoplay; encrypted-media" frameborder="0"></iframe>`;
+      document.getElementById("musicBtn").textContent = "Click!";
   }
+  isSwitching = false;
 }
 
 // ===== 播放狀態變化事件 =====
@@ -92,6 +104,16 @@ function onPlayerStateChange(event) {
   }
 }
 
+function next(){
+  if(isSwitching) return;
+  if(currentIndex<queue.length-1){
+    currentIndex++;
+    playCurrent();
+  } else {
+    console.log("播放清單結束，等待新歌曲...");
+  }
+}
+
 // ===== 取得 Google Sheet 的歌曲列表 =====
 function fetchSheet() {
   fetch("https://docs.google.com/spreadsheets/d/e/2PACX-1vQHFZuvJPJz--YWbAF1Kgpwlre9GMRHK_QgGz-2YkEIlVvrhOkb4Pre3gNTQeP1ieWMMZR8R6WqUg76/pub?output=csv")
@@ -103,8 +125,11 @@ function fetchSheet() {
       const newQueue = rows
         .map(row => {
           const [timestamp, url] = row.split(",");
-          if (!url || !url.includes("youtu")) return null;
-          return { timestamp, url };
+          if (!url) return null;
+          url = url.trim();
+          if(url.includes("youtu") && !url.includes("music")) return { url, type:"youtube" };
+          if(url.includes("music.youtube.com")) return { url, type:"ytmusic" };
+          if(url.includes("spotify.com")) return { url, type:"spotify" };
         })
         .filter(Boolean);
 
@@ -121,11 +146,13 @@ function fetchSheet() {
       }
 
       // 如果播放器空閒，立刻播第一首或新加入的歌
-      if (started && (!ytPlayer || ytPlayer.getPlayerState() !== YT.PlayerState.PLAYING)) {
+      if (started &&  ((queue[currentIndex]?.type === "youtube" && (!ytPlayer || ytPlayer.getPlayerState() !== YT.PlayerState.PLAYING)) || (queue[currentIndex]?.type !== "youtube" && !isSwitching))) {
         playCurrent();
       }
     });
 }
+
+document.getElementById("nextBtn").addEventListener("click", next);
 
 // ===== 手動播放（可選） =====
 function playMusic(url) {
