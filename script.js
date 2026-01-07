@@ -102,6 +102,7 @@ async function playCurrent() {
       document.getElementById("musicBtn").textContent = "Click!";
   }
   isSwitching = false;
+  displayComment(queue[currentIndex]?.comment);
 }
 
 // 下一首
@@ -124,7 +125,7 @@ function next(){
     currentIndex++;
     // 先暫時顯示 "--"
     document.getElementById("trackTitle").textContent = "--";
-    playCurrent();
+    playCurrent();2
   } else {
     console.log("播放清單結束");
   }
