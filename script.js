@@ -71,7 +71,7 @@ function extractYouTubeID(url) {
 async function playCurrent() {
   if (!queue[currentIndex] || !queue[currentIndex].url) return;
   if (currentIndex >= queue.length) return;
-  const { url, type } = queue[currentIndex];    
+  const { url, type} = queue[currentIndex];    
   const player = document.getElementById("player");
   player.innerHTML = "";
   isSwitching = true;
@@ -125,7 +125,7 @@ function next(){
     currentIndex++;
     // 先暫時顯示 "--"
     document.getElementById("trackTitle").textContent = "--";
-    playCurrent();2
+    playCurrent();
   } else {
     console.log("播放清單結束");
   }
@@ -150,10 +150,10 @@ function fetchSheet() {
           if(url.includes("music.youtube.com")){
             const videoId = new URL(url).searchParams.get("v");
             url = `https://www.youtube.com/watch?v=${videoId}`;
-            return { url, type:"youtube" };
+            return { url, type:"youtube", comment };
           }
-          else if(url.includes("youtu") && !url.includes("music")) return { url, type:"youtube" };
-          else if(url.includes("spotify.com")) return { url, type:"spotify" };
+          else if(url.includes("youtu") && !url.includes("music")) return { url, type:"youtube", comment };
+          else if(url.includes("spotify.com")) return { url, type:"spotify", comment };
         })
         .filter(Boolean);
 
