@@ -226,11 +226,11 @@ function stopScrollTitle() {
 }
 
 function displayComment(comment) {
-  const commentEl = document.getElementById("comment"); 
+  const comments = document.getElementById("comment"); 
   if (comment) {
-    commentEl.textContent = comment;
+    comments.textContent = comment;
   } else {
-    commentEl.textContent = "無";
+    comments.textContent = "無";
   }
 }
 document.getElementById("nextBtn").addEventListener("click", next);
