@@ -140,9 +140,10 @@ function fetchSheet() {
       // 每次都建一個新 queue
       const newQueue = rows
         .map(row => {
-          let [timestamp, url] = row.split(",");
+          let columns = row.split(",");
+          let url = columns[1]?.trim();
+          let comment = columns[2]?.trim();
           if (!url) return null;
-          url = url.trim();
 
           // 把 YT music 轉 YT 連結
           if(url.includes("music.youtube.com")){
@@ -170,6 +171,8 @@ function fetchSheet() {
       if (started &&  ((queue[currentIndex]?.type === "youtube" && (!ytPlayer || ytPlayer.getPlayerState() !== YT.PlayerState.PLAYING)) || (queue[currentIndex]?.type !== "youtube" && !isSwitching))) {
         playCurrent();
       }
+
+      displayComment(queue[currentIndex]?.comment);
     });
 }
 
@@ -222,5 +225,13 @@ function stopScrollTitle() {
   stopScroll = true;
 }
 
+function displayComment(comment) {
+  const commentEl = document.getElementById("comment"); 
+  if (comment) {
+    commentElement.textContent = comment;
+  } else {
+    commentElement.textContent = "無";
+  }
+}
 document.getElementById("nextBtn").addEventListener("click", next);
-setTrackTitle("--");
+setTrackTitle("-");

@@ -94,6 +94,10 @@ h1 {
   white-space: nowrap;
 }
 
+.nowPlaying #p {
+  margin-top: 10px;
+}
+
 .titleMask {
   overflow: hidden;
   flex: 1;
@@ -142,6 +146,18 @@ footer {
   padding: 10px 0;
   position: fixed;
 }
+
+.p {
+  position: fixed;
+  top: 88%; 
+  left: 50%;
+  transform: translateX(-50%);
+  width: 600px;
+  font-size: 24px;
+  display: flex;
+  align-items: center;
+  font-weight: bold;  
+}
   </style>
 </head>
 <body>
@@ -153,12 +169,13 @@ footer {
     <button id="musicBtn">MUSIC</button>
   </div>  
   <div class="nowPlaying" id="nowPlaying">
-    <label>Now Playing: </label>
+    <label>Now Playing : </label>
     <div class="titleMask">
-      <span id="trackTitle">-</span><br>
+      <span id="trackTitle"></span>
     </div>
      <button id="nextBtn">切歌</button>
   </div>
+  <div class="p">Comment : <span id="comment">-</span></div>
   <div class="player" id="player"></div>
   <div class="qr">
     <img src="images/qrcode.png" alt="QR Code"/>
