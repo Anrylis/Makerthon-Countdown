@@ -63,7 +63,7 @@ async function playCurrent() {
 
   if (type == "youtube") {
     const videoId = extractYouTubeID(url);
-    title = await fetchYouTubeTitle(videoId);
+    let title = await fetchYouTubeTitle(videoId);
     setTrackTitle(title);
     if (!ytPlayer) {
     ytPlayer = new YT.Player("player", {
@@ -106,6 +106,8 @@ function next(){
   if(isSwitching) return;
   if(currentIndex<queue.length-1){
     currentIndex++;
+    // 先暫時顯示 "--"
+    document.getElementById("trackTitle").textContent = "--";
     playCurrent();
   } else {
     console.log("播放清單結束");
@@ -166,36 +168,33 @@ async function fetchYouTubeTitle(videoId) {
   }
 }
 
-function setTrackTitle(name) {
+async function setTrackTitle(name) {
   let title = document.getElementById("trackTitle");
   title.textContent = name;
   const mask = title.parentElement;
+
   title.style.transition = "none";
   title.style.transform = "translateX(0)";
 
   // 等瀏覽器算歌名長度
-  requestAnimationFrame(() => {
-    const titleWidth = title.scrollWidth;
-    const maskWidth = mask.clientWidth;
+  await new Promise(requestAnimationFrame);
+  const titleWidth = title.scrollWidth;
+  const maskWidth = mask.clientWidth;
 
-    // 沒超過，別滾
-    if (titleWidth <= maskWidth) return;
+  // 沒超過，別滾
+  if (titleWidth <= maskWidth) return;
 
-    const distance = titleWidth - maskWidth;
-    const speed = 60;
-    const duration = distance / speed;
+  const distance = titleWidth - maskWidth;
+  const speed = 60;
+  const duration = distance / speed;
 
-    setTimeout(() => {
-      title.style.transition = `transform ${duration}s linear`;
-      title.style.transform = `translateX(-${distance}px)`;
+  await new Promise(resolve => setTimeout(resolve, 2000));
+  title.style.transition = `transform ${duration}s linear`;
+  title.style.transform = `translateX(-${distance}px)`;
 
-      // 反覆滾 T=2s, offset=2s
-      setTimeout(() => {
-        setTrackTitle(name);
-      }, duration * 1000 + 2000);
-
-    }, 2000);
-  });
+  // 反覆滾 T=2s, offset=2s
+  await new Promise(resolve => setTimeout(resolve, duration * 1000 + 2000));
+  setTrackTitle(name);
 }
 
 document.getElementById("nextBtn").addEventListener("click", next);
