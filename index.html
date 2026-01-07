@@ -75,7 +75,7 @@ h1 {
   top: 80%; 
   left: 50%;
   transform: translateX(-50%);
-  width: 300px;
+  width: 500px;
   font-size: 24px;
   white-space: nowrap;
   display: flex;
@@ -96,6 +96,28 @@ h1 {
   overflow: hidden;
   flex: 1;
 }
+
+.qr {
+  position: fixed;
+  top: 20px;
+  right: 30px;
+  padding: -10px;
+  width: 80px;
+  height: 80px;
+  z-index: 2;
+  text-align: center;
+  color: white;
+  font-size: 16px;
+  font-weight: bold;
+}
+
+.qr img {
+  width: 100px;
+  height: 100px;
+  display: block;
+  margin-bottom: 2px;
+}
+
   </style>
 </head>
 <body>
@@ -105,15 +127,19 @@ h1 {
   <div class="btn">
     <button id="startBtn">START</button>
     <button id="musicBtn">MUSIC</button>
-    <button id="nextBtn">切歌</button>
   </div>  
   <div class="nowPlaying" id="nowPlaying">
     <label>Now Playing: </label>
     <div class="titleMask">
-      <span id="trackTitle">-</span>
+      <span id="trackTitle">-</span><br>
     </div>
+     <button id="nextBtn">切歌</button>
   </div>
   <div class="player" id="player"></div>
+  <div class="qr">
+    <img src="images/qrcode.png" alt="QR Code"/>
+    <p>點歌表單</p>
+  </div>
 
 <script src="script.js?v=2"></script> 
 </body>
