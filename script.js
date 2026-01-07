@@ -6,6 +6,7 @@ let currentIndex = 0;
 let ytPlayer = null;
 let countdownTimer = null;
 let pollTimer = null;
+let stopScroll = 0;
 const YTAPI_KEY = "AIzaSyDUshU65Iy1sgzw7PLjwWrwiosrwE_lQf8";
 
 // 載入 YouTube API 
@@ -104,6 +105,7 @@ function onPlayerStateChange(event) {
 
 function next(){
   if(isSwitching) return;
+  stopScroll++;
   if(currentIndex<queue.length-1){
     currentIndex++;
     // 先暫時顯示 "--"
@@ -168,13 +170,15 @@ async function fetchYouTubeTitle(videoId) {
   }
 }
 
+
 async function setTrackTitle(name) {
+  const count = ++stopScroll;
   let title = document.getElementById("trackTitle");
-  title.textContent = name;
   const mask = title.parentElement;
 
   title.style.transition = "none";
   title.style.transform = "translateX(0)";
+  title.textContent = name;
 
   // 等瀏覽器算歌名長度
   await new Promise(requestAnimationFrame);
@@ -188,13 +192,20 @@ async function setTrackTitle(name) {
   const speed = 60;
   const duration = distance / speed;
 
-  await new Promise(resolve => setTimeout(resolve, 2000));
-  title.style.transition = `transform ${duration}s linear`;
-  title.style.transform = `translateX(-${distance}px)`;
+  while (count === stopScroll) {
+    await new Promise(resolve => setTimeout(resolve, 2000));
+    title.style.transition = `transform ${duration}s linear`;
+    title.style.transform = `translateX(-${distance}px)`;
 
-  // 反覆滾 T=2s, offset=2s
-  await new Promise(resolve => setTimeout(resolve, duration * 1000 + 2000));
-  setTrackTitle(name);
+    // 反覆滾 T=2s, offset=2s
+    await new Promise(resolve => setTimeout(resolve, duration * 1000 + 2000));
+    title.style.transition = "none";
+    title.style.transform = "translateX(0)";
+  }
+}
+
+function stopScrollTitle() {
+  stopScroll = true;
 }
 
 document.getElementById("nextBtn").addEventListener("click", next);
