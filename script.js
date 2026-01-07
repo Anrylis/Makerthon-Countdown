@@ -6,6 +6,7 @@ let currentIndex = 0;
 let ytPlayer = null;
 let countdownTimer = null;
 let pollTimer = null;
+const YTAPI_KEY = "AIzaSyDUshU65Iy1sgzw7PLjwWrwiosrwE_lQf8";
 
 // 載入 YouTube API 
 const tag = document.createElement("script");
@@ -52,7 +53,7 @@ function extractYouTubeID(url) {
   return params.get("v");
 }
 
-function playCurrent() {
+async function playCurrent() {
   if (!queue[currentIndex] || !queue[currentIndex].url) return;
   if (currentIndex >= queue.length) return;
   const { url, type } = queue[currentIndex];    
@@ -62,10 +63,12 @@ function playCurrent() {
 
   if (type == "youtube") {
     const videoId = extractYouTubeID(url);
+    title = await fetchYouTubeTitle(videoId);
+    setTrackTitle(title);
     if (!ytPlayer) {
     ytPlayer = new YT.Player("player", {
       width: 170,
-      height: 145,
+      height: 100,
       videoId,
       playerVars: { autoplay: 1 },
       events: {
@@ -150,6 +153,17 @@ function fetchSheet() {
         playCurrent();
       }
     });
+}
+
+async function fetchYouTubeTitle(videoId) {
+  try {
+    const res = await fetch(`https://www.googleapis.com/youtube/v3/videos?part=snippet&id=${videoId}&key=${YTAPI_KEY}`);
+    const data = await res.json();
+    return data.items?.[0]?.snippet?.title || "Unknown";
+  } catch (e) {
+    console.error(e);
+    return "Unknown";
+  }
 }
 
 function setTrackTitle(name) {
