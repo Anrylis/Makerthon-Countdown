@@ -14,15 +14,6 @@ const tag = document.createElement("script");
 tag.src = "https://www.youtube.com/iframe_api";
 document.body.appendChild(tag);
 
-window.onerror = function (message, source, lineno, colno, error) {
-  // 太多不影響功能的 error 了，先不顯示
-  if (message.includes("googleads") || message.includes("youtubei")) {
-    return true; 
-  }
-  console.error("Caught error:", message, error);
-  return false; 
-};
-
 // Start 按鈕
 document.getElementById("startBtn").addEventListener("click", () => {
   if (started) return;
@@ -34,11 +25,11 @@ document.getElementById("startBtn").addEventListener("click", () => {
 // music 按鈕
 document.getElementById("musicBtn").addEventListener("click", () => {
   if (!started) return;
-  startPolling();   // 開始抓表單
+  startPolling();   // 抓表單
   document.getElementById("musicBtn").style.display = "none";
 });
  
-// 倒數函式
+// 倒數
 function startCountdown() {
   countdownTimer = setInterval(() => {
     remainingSeconds--;
@@ -56,7 +47,7 @@ function startCountdown() {
   }, 1000);
 }
 
-//抓後台表單
+//  抓後台表單
 function startPolling() {
   pollTimer = setInterval(fetchSheet, 100000); // 每 100 秒抓一次
   fetchSheet(); // 先抓一次
@@ -138,7 +129,6 @@ function fetchSheet() {
     .then(text => {
       const rows = text.split("\n").slice(1);
 
-      // 每次都建一個新 queue
       const newQueue = rows
         .map(row => {
           let columns = row.split(",");
@@ -188,7 +178,6 @@ async function fetchYouTubeTitle(videoId) {
   }
 }
 
-
 async function setTrackTitle(name) {
   const count = ++stopScroll;
   let title = document.getElementById("trackTitle");
@@ -198,7 +187,7 @@ async function setTrackTitle(name) {
   title.style.transform = "translateX(0)";
   title.textContent = name;
 
-  // 等瀏覽器算歌名長度
+  // 等瀏覽器算出歌名長度
   await new Promise(requestAnimationFrame);
   const titleWidth = title.scrollWidth;
   const maskWidth = mask.clientWidth;

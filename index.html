@@ -3,176 +3,19 @@
 <head>
   <meta charset="UTF-8">
   <title>創客松倒數</title>
-  <style>
-body {
-  margin: 0;
-  min-height: 100vh;
-  background-image: url("./images/bg.jpg");
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
-
-  display: flex;
-  flex-direction: column;
-  align-items: center;   /* 水平置中 */
-
-  font-family: sans-serif;
-  color: white;
-  position: relative;
-}
-
-body::before {
-  content: "";
-  position: fixed;
-  inset: 0;
-  background: rgba(0, 0, 0, 0.6);
-  z-index: 0;
-}
-
-body > * {
-  position: relative;
-  z-index: 1;
-}
-
-button {
-  padding: 5px 10px;
-  margin-left: 8px;
-  cursor: pointer;
-}
-
-.countdown {
-  font-size: 270px;
-  font-weight: bold;
-  color: white;
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-}
-
-.player {
-  position: fixed;
-  bottom: 20px;
-  right: 20px;  
-  z-index: 1;
-}
-
-
-h1 {
-  margin-top: 50px;
-  font-size: 63px;
-  color: white;
-}
-
-.btn{  
-  margin-top: -40px;
-  gap: 12px;
-  display: flex;
-  color:rgb(239, 206, 156);
-  border-radius: 10px;
-}
-
-.nowPlaying {
-  position: fixed;
-  top: 80%; 
-  left: 50%;
-  transform: translateX(-50%);
-  width: 600px;
-  font-size: 24px;
-  white-space: nowrap;
-  display: flex;
-  align-items: center;
-}
-
-.nowPlaying label {
-  font-weight: bold;
-  margin-right: 8px;
-}
-
-.nowPlaying #trackTitle {
-  display: inline-block;
-  white-space: nowrap;
-}
-
-.nowPlaying #p {
-  margin-top: 10px;
-}
-
-.titleMask {
-  overflow: hidden;
-  flex: 1;
-}
-
-.qr {
-  position: fixed;
-  top: 30px;
-  right: 30px;
-  padding: -10px;
-  width: 100px;
-  height: 100px;
-  text-align: right;
-  z-index: 2;
-  color: white;
-  font-size: 16px;
-  font-weight: bold;
-}
-
-.qr img {
-  width: 100px;
-  height: 100px;
-  display: block;
-  right: -10px;
-  position: relative;
-  margin-bottom: 2px;
-  z-index: 2;
-}
-
-.qr::after {
-  content: "";
-  position: absolute;
-  top: -10px;
-  right: -20px;
-  width: 120px;
-  height: 120px;
-  background: white;
-  z-index: 1;
-}
-
-footer {
-  text-align: center;  
-  font-size: 14px;   
-  color: gray;      
-  margin-top: 530px; 
-  padding: 10px 0;
-  position: fixed;
-}
-
-.p #comment {
-  font-weight: normal; 
-  margin-left: 10px;
-}
-
-.p {
-  position: fixed;
-  top: 88%; 
-  left: 50%;
-  transform: translateX(-50%);
-  width: 600px;
-  font-size: 24px;
-  display: flex;
-  align-items: center;
-  font-weight: bold;  
-}
-  </style>
+  <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
   <h1>創客松製作截止倒數</h1>
   
   <div class="countdown" id="countdown">28:00:00</div>
+
   <div class="btn">
     <button id="startBtn">START</button>
     <button id="musicBtn">MUSIC</button>
   </div>  
+  
   <div class="nowPlaying" id="nowPlaying">
     <label>Now Playing : </label>
     <div class="titleMask">
@@ -180,8 +23,10 @@ footer {
     </div>
      <button id="nextBtn">切歌</button>
   </div>
+
   <div class="p">Comment : <span id="comment">-</span></div>
   <div class="player" id="player"></div>
+  
   <div class="qr">
     <img src="images/qrcode.png" alt="QR Code"/>
     <p>點歌表單</p>
