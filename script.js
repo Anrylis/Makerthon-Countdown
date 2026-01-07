@@ -23,10 +23,8 @@ document.getElementById("startBtn").addEventListener("click", () => {
 // music 按鈕
 document.getElementById("musicBtn").addEventListener("click", () => {
   if (!started) return;
-
   startPolling();   // 開始抓表單
-
-  //document.getElementById("musicBtn").style.display = "none";
+  document.getElementById("musicBtn").style.display = "none";
 });
  
 // 倒數函式
@@ -66,8 +64,8 @@ function playCurrent() {
     const videoId = extractYouTubeID(url);
     if (!ytPlayer) {
     ytPlayer = new YT.Player("player", {
-      width: 320,
-      height: 180,
+      width: 170,
+      height: 145,
       videoId,
       playerVars: { autoplay: 1 },
       events: {
@@ -186,5 +184,5 @@ function setTrackTitle(name) {
   });
 }
 
-
 document.getElementById("nextBtn").addEventListener("click", next);
+setTrackTitle("--");
