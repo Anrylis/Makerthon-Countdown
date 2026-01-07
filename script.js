@@ -228,9 +228,9 @@ function stopScrollTitle() {
 function displayComment(comment) {
   const commentEl = document.getElementById("comment"); 
   if (comment) {
-    commentElement.textContent = comment;
+    commentEl.textContent = comment;
   } else {
-    commentElement.textContent = "無";
+    commentEl.textContent = "無";
   }
 }
 document.getElementById("nextBtn").addEventListener("click", next);
