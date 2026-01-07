@@ -14,6 +14,15 @@ const tag = document.createElement("script");
 tag.src = "https://www.youtube.com/iframe_api";
 document.body.appendChild(tag);
 
+window.onerror = function (message, source, lineno, colno, error) {
+  // 太多不影響功能的 error 了，先不顯示
+  if (message.includes("googleads") || message.includes("youtubei")) {
+    return true; 
+  }
+  console.error("Caught error:", message, error);
+  return false; 
+};
+
 // Start 按鈕
 document.getElementById("startBtn").addEventListener("click", () => {
   if (started) return;
@@ -39,6 +48,11 @@ function startCountdown() {
     const s = String(remainingSeconds % 60).padStart(2, "0");
 
     document.getElementById("countdown").textContent = `${h}:${m}:${s}`;
+    
+    // 最後倒數 30 分鐘 !!!
+    if (remainingSeconds <= 30 * 60) {
+      countdownElement.style.color = "red"; 
+    } 
   }, 1000);
 }
 
