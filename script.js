@@ -16,9 +16,7 @@ document.body.appendChild(tag);
 document.getElementById("startBtn").addEventListener("click", () => {
   if (started) return;
   started = true;
-
-  startCountdown();   // 開始倒數
-
+  startCountdown(); 
   document.getElementById("startBtn").style.display = "none";
 });
 
@@ -84,13 +82,13 @@ function playCurrent() {
       ytPlayer.loadVideoById(videoId);
     }
   } else if (type === "spotify") {
-      player.innerHTML = `<iframe src="${url.replace("open.spotify.com","open.spotify.com/embed")}" width="300" height="80" allow="autoplay; encrypted-media" frameborder="0"></iframe>`;
+      player.innerHTML = `<iframe src="${url.replace("open.spotify.com","open.spotify.com/embed")}" width="300" height="80" style="border: none;" allow="autoplay; encrypted-media"></iframe>`;
       document.getElementById("musicBtn").textContent = "Click!";
   }
   isSwitching = false;
 }
 
-// 往下播放
+// 下一首
 function onPlayerStateChange(event) {
   if (event.data === YT.PlayerState.ENDED) {
     currentIndex++;
@@ -98,7 +96,7 @@ function onPlayerStateChange(event) {
     if (currentIndex < queue.length) {
       playCurrent();
     } else {
-      console.log("播放清單結束，等待新歌曲...");
+      console.log("播放清單結束");
     }
   }
 }
@@ -109,23 +107,25 @@ function next(){
     currentIndex++;
     playCurrent();
   } else {
-    console.log("播放清單結束，等待新歌曲...");
+    console.log("播放清單結束");
   }
 }
 
-// csv 抓歌曲
+// 用 csv 抓後台歌單
 function fetchSheet() {
   fetch("https://docs.google.com/spreadsheets/d/e/2PACX-1vQHFZuvJPJz--YWbAF1Kgpwlre9GMRHK_QgGz-2YkEIlVvrhOkb4Pre3gNTQeP1ieWMMZR8R6WqUg76/pub?output=csv")
     .then(res => res.text())
     .then(text => {
       const rows = text.split("\n").slice(1);
 
-      // 建一個新 queue
+      // 每次都建一個新 queue
       const newQueue = rows
         .map(row => {
           let [timestamp, url] = row.split(",");
           if (!url) return null;
           url = url.trim();
+
+          // 把 YT music 轉 YT 連結
           if(url.includes("music.youtube.com")){
             const videoId = new URL(url).searchParams.get("v");
             url = `https://www.youtube.com/watch?v=${videoId}`;
@@ -140,7 +140,6 @@ function fetchSheet() {
       const currentUrl = queue[currentIndex]?.url;
       queue = newQueue;
 
-      // currentIndex 指向正在播放的歌曲或第一首
       if (currentUrl) {
         const idx = queue.findIndex(item => item.url === currentUrl);
         currentIndex = idx >= 0 ? idx : 0;
@@ -148,11 +147,44 @@ function fetchSheet() {
         currentIndex = 0;
       }
 
-      // 初始會播第一首或新加入的歌
+      // 初始
       if (started &&  ((queue[currentIndex]?.type === "youtube" && (!ytPlayer || ytPlayer.getPlayerState() !== YT.PlayerState.PLAYING)) || (queue[currentIndex]?.type !== "youtube" && !isSwitching))) {
         playCurrent();
       }
     });
 }
+
+function setTrackTitle(name) {
+  let title = document.getElementById("trackTitle");
+  title.textContent = name;
+  const mask = title.parentElement;
+  title.style.transition = "none";
+  title.style.transform = "translateX(0)";
+
+  // 等瀏覽器算歌名長度
+  requestAnimationFrame(() => {
+    const titleWidth = title.scrollWidth;
+    const maskWidth = mask.clientWidth;
+
+    // 沒超過，別滾
+    if (titleWidth <= maskWidth) return;
+
+    const distance = titleWidth - maskWidth;
+    const speed = 60;
+    const duration = distance / speed;
+
+    setTimeout(() => {
+      title.style.transition = `transform ${duration}s linear`;
+      title.style.transform = `translateX(-${distance}px)`;
+
+      // 反覆滾 T=2s, offset=2s
+      setTimeout(() => {
+        setTrackTitle(name);
+      }, duration * 1000 + 2000);
+
+    }, 2000);
+  });
+}
+
 
 document.getElementById("nextBtn").addEventListener("click", next);
