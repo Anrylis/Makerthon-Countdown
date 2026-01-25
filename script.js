@@ -1,6 +1,5 @@
 let started = false;
 let isSwitching = false;
-let remainingSeconds = 28 * 60 * 60;
 let queue = [];
 let currentIndex = 0;
 let ytPlayer = null;
@@ -31,21 +30,31 @@ document.getElementById("musicBtn").addEventListener("click", () => {
  
 // 倒數
 function startCountdown() {
+  const countdownElement = document.getElementById("countdown");
+  const targetTime = new Date("2026-01-27T13:00:00").getTime();
+
   countdownTimer = setInterval(() => {
-    remainingSeconds--;
+    const now = Date.now();
+    let diff = Math.floor((targetTime - now) / 1000); // 剩餘秒數
 
-    const h = String(Math.floor(remainingSeconds / 3600)).padStart(2, "0");
-    const m = String(Math.floor((remainingSeconds % 3600) / 60)).padStart(2, "0");
-    const s = String(remainingSeconds % 60).padStart(2, "0");
+    if (diff <= 0) {
+      countdownElement.textContent = "00:00:00";
+      clearInterval(countdownTimer);
+      return;
+    }
 
-    document.getElementById("countdown").textContent = `${h}:${m}:${s}`;
-    
-    // 最後倒數 30 分鐘 !!!
-    if (remainingSeconds <= 30 * 60) {
-      countdownElement.style.color = "red"; 
-    } 
+    const h = String(Math.floor(diff / 3600)).padStart(2, "0");
+    const m = String(Math.floor((diff % 3600) / 60)).padStart(2, "0");
+    const s = String(diff % 60).padStart(2, "0");
+
+    countdownElement.textContent = `${h}:${m}:${s}`;
+
+    if (diff <= 30 * 60) {
+      countdownElement.style.color = "red";
+    }
   }, 1000);
 }
+
 
 //  抓後台表單
 function startPolling() {
