@@ -63,10 +63,32 @@ function startPolling() {
 }
 
 function extractYouTubeID(url) {
-  if (url.includes("youtu.be")) return url.split("/").pop().split("?")[0];
-  const params = new URL(url).searchParams;
-  return params.get("v");
+  try {
+    const parsedUrl = new URL(url);
+
+    // youtu.be/VIDEO_ID
+    if (parsedUrl.hostname === "youtu.be") {
+      return parsedUrl.pathname.slice(1);
+    }
+
+    // youtube.com/watch?v=VIDEO_ID
+    if (parsedUrl.searchParams.get("v")) {
+      return parsedUrl.searchParams.get("v");
+    }
+
+    // youtube.com/embed/VIDEO_ID
+    // youtube.com/shorts/VIDEO_ID
+    const pathMatch = parsedUrl.pathname.match(/\/(embed|shorts)\/([^/?]+)/);
+    if (pathMatch) {
+      return pathMatch[2];
+    }
+
+    return null;
+  } catch {
+    return null;
+  }
 }
+
 
 async function playCurrent() {
   if (!queue[currentIndex] || !queue[currentIndex].url) return;
