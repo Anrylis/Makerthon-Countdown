@@ -63,7 +63,7 @@ function startPolling() {
 }
 
 function extractYouTubeID(url) {
-  if (url.includes("youtu.be")) return url.split("/").pop();
+  if (url.includes("youtu.be")) return url.split("/").pop().split("?")[0];
   const params = new URL(url).searchParams;
   return params.get("v");
 }
